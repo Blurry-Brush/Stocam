@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(request) {
   const uri = process.env.uri;
-
+  
   const client = new MongoClient(uri);
 
   try {

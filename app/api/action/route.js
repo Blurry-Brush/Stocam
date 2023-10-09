@@ -18,17 +18,27 @@ export async function POST(request) {
         ? parseInt(initialQuantity) - 1
         : parseInt(initialQuantity) + 1;
 
-    const updateDoc = {
-      $set: {
-        quantity: newQuantity,
-      },
-    };
+    if (newQuantity === 0) {
+      //delete the product
+      const result = await inventory.deleteOne(filter);
 
-    const result = await inventory.updateOne(filter, updateDoc);
-    return NextResponse.json({
-      success: true,
-      message: `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`,
-    });
+      return NextResponse.json({
+        success: true,
+        message: `${result.deletedCount} documents deleted`,
+      });
+    } else {
+      const updateDoc = {
+        $set: {
+          quantity: newQuantity,
+        },
+      };
+
+      const result = await inventory.updateOne(filter, updateDoc);
+      return NextResponse.json({
+        success: true,
+        message: `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`,
+      });
+    }
   } finally {
     await client.close();
   }

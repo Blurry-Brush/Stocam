@@ -75,7 +75,11 @@ export default function Home() {
     if (action === "plus") {
       newProducts[index].quantity = parseInt(initialQuantity) + 1;
     } else {
-      newProducts[index].quantity = parseInt(initialQuantity) - 1;
+      if (parseInt(initialQuantity) - 1 === 0) {
+        newProducts.splice(index, 1);
+      } else {
+        newProducts[index].quantity = parseInt(initialQuantity) - 1;
+      }
     }
     setProducts(newProducts);
 
@@ -85,7 +89,11 @@ export default function Home() {
     if (action === "plus") {
       newDropDown[indexDrop].quantity = parseInt(initialQuantity) + 1;
     } else {
-      newDropDown[indexDrop].quantity = parseInt(initialQuantity) - 1;
+      if (parseInt(initialQuantity) - 1 === 0) {
+        newDropDown.splice(indexDrop, 1);
+      } else {
+        newDropDown[indexDrop].quantity = parseInt(initialQuantity) - 1;
+      }
     }
     setDropDown(newDropDown);
 
