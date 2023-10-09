@@ -1,6 +1,7 @@
 "use client";
 import Header from "@/components/Header";
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 export default function Home() {
   const [productForm, setProductForm] = useState({});
@@ -13,11 +14,11 @@ export default function Home() {
 
   useEffect(() => {
     const fetchProducts = async () => {
+      
       let response = await fetch("/api/products", {
         method: "GET",
       });
       response = await response.json();
-      // console.log(response.products);
       setProducts(response.products);
     };
     fetchProducts();
@@ -69,6 +70,7 @@ export default function Home() {
   };
 
   const buttonAction = async (action, slug, initialQuantity) => {
+    e.preventDefault();
     let index = products.findIndex((item) => item.slug == slug);
     let newProducts = JSON.parse(JSON.stringify(products));
 
@@ -164,12 +166,16 @@ export default function Home() {
             </circle>
           </svg>
         )}
-        <div className="dropdowncontainer bg-purple-100 rounded-md absolute w-[70vw] border-1">
+        <motion.div
+          layout
+          className="dropdowncontainer bg-purple-100 rounded-md absolute w-[70vw] border-1"
+        >
           {dropDown.map((item) => {
             return (
-              <div
+              <motion.div
                 className="container flex justify-between my-1 p-2 border-b-2"
                 key={item._id}
+                layout
               >
                 <span>
                   {item.slug} ({item.quantity} available for ₹{item.price}){" "}
@@ -196,10 +202,10 @@ export default function Home() {
                     +
                   </button>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
       <div className="container mx-auto w-4/5 p-8">
         <h1 className="text-2xl font-bold mb-4">Add a Product</h1>
@@ -265,9 +271,18 @@ export default function Home() {
           </button>
         </form>
       </div>
-      <div className="container w-4/5 mx-auto p-8">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.2 }}
+        className="container w-4/5 mx-auto p-8"
+      >
         <h1 className="text-2xl font-bold mb-4">Current Stock</h1>
-        <table className="min-w-full bg-white border border-gray-300">
+        <motion.table
+          layout
+          transition={{ duration: 0.4, ease: "easeInOut" }}
+          className="min-w-full bg-white border border-gray-300"
+        >
           <thead>
             <tr>
               <th className="py-2 px-4 border-b">ID</th>
@@ -278,16 +293,21 @@ export default function Home() {
           </thead>
           <tbody>
             {products.map((product, index) => (
-              <tr key={product._id}>
+              <motion.tr
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.4, delay: index * 0.2 }}
+                key={product._id}
+              >
                 <td className="py-2 px-4 border-b">{index + 1}</td>
                 <td className="py-2 px-4 border-b">{product.slug}</td>
                 <td className="py-2 px-4 border-b">₹{product.price}</td>
                 <td className="py-2 px-4 border-b">{product.quantity}</td>
-              </tr>
+              </motion.tr>
             ))}
           </tbody>
-        </table>
-      </div>
+        </motion.table>
+      </motion.div>
     </>
   );
 }
